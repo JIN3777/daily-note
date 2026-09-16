@@ -46,14 +46,9 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
 .metric .up { color: var(--accent); font-weight: 600; }
 .subhead { font-size: 13px; font-weight: 700; color: var(--muted); margin: 12px 0 6px; }
 .chart-img { width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-top: 14px; display: block; }
-.news-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-.news-title a { color: var(--link); text-decoration: none; }
-.news-title a:hover { text-decoration: underline; }
-.news-body { font-size: 14px; line-height: 1.6; margin: 0 0 6px; white-space: pre-line; }
-.news-cite { color: var(--muted); font-size: 13px; margin: 0; }
-.disc-item { font-size: 14px; margin-bottom: 8px; }
-.disc-item a { color: var(--link); text-decoration: none; }
-.disc-item a:hover { text-decoration: underline; }
+.news-item, .disc-item { font-size: 14px; margin-bottom: 8px; }
+.news-item a, .disc-item a { color: var(--link); text-decoration: none; }
+.news-item a:hover, .disc-item a:hover { text-decoration: underline; }
 .empty { color: var(--muted); font-size: 14px; }
 .gap-pos { color: #16a34a; }
 .gap-neg { color: var(--accent); }
@@ -69,7 +64,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">큐라티스</span><span class="badge limit-up">상한가</span></div>
   <div class="metric"><span class="up">+30.00%</span> · 거래량 9만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMibEFVX3lxTFBrNzh1WWhKSkRIODhCQkJfYWE3c0E1bjlVS3VQUlUxWUNEcHFGREhiUF9uQ3lJNmxicDJmUkhsRGZEVjJOalNURU1DYjNKeTc0dTNBR2ZIM3VQYlBTQnlaUFpRNWRHTzZib2VuZw?oc=5" target="_blank" rel="noopener">[특징주] 큐라티스, 美 GMP 실사 통과…‘상한가’</a></div><p class="news-cite">[바이오타임즈, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMibEFVX3lxTFBrNzh1WWhKSkRIODhCQkJfYWE3c0E1bjlVS3VQUlUxWUNEcHFGREhiUF9uQ3lJNmxicDJmUkhsRGZEVjJOalNURU1DYjNKeTc0dTNBR2ZIM3VQYlBTQnlaUFpRNWRHTzZib2VuZw?oc=5" target="_blank" rel="noopener">[특징주] 큐라티스, 美 GMP 실사 통과…‘상한가’</a> <span class="section-note">— 바이오타임즈, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_348080.png" alt="큐라티스 차트">
@@ -78,7 +73,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">에이스테크</span><span class="badge limit-up">상한가</span></div>
   <div class="metric"><span class="up">+29.97%</span> · 거래량 108만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMikAFBVV95cUxNaG5fM2dpVG0zZ3c5RWcwOVJNdEs1a1hPSVA5VGFlRnJHWkRYMXFwSmdzTWdSb1dUODUxNnFGX2w1YlR3QUo2S2hESUhldUJEQkIwTUpwRERIc1daWnBxRkZma010aDFBMmVnZFBDaEtzUzhDLWNHY2xvTWVXbGRSUGYxaWxBMUw0RzFUQTk1ZXc?oc=5" target="_blank" rel="noopener">[마감시황] 09/16 반도체 강세에 코스피 +1.37% 5일 만에 반등</a></div><p class="news-cite">[네이버 프리미엄콘텐츠, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMikAFBVV95cUxNaG5fM2dpVG0zZ3c5RWcwOVJNdEs1a1hPSVA5VGFlRnJHWkRYMXFwSmdzTWdSb1dUODUxNnFGX2w1YlR3QUo2S2hESUhldUJEQkIwTUpwRERIc1daWnBxRkZma010aDFBMmVnZFBDaEtzUzhDLWNHY2xvTWVXbGRSUGYxaWxBMUw0RzFUQTk1ZXc?oc=5" target="_blank" rel="noopener">[마감시황] 09/16 반도체 강세에 코스피 +1.37% 5일 만에 반등</a> <span class="section-note">— 네이버 프리미엄콘텐츠, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_088800.png" alt="에이스테크 차트">
@@ -87,7 +82,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">엠에프씨</span><span class="badge limit-up">상한가</span></div>
   <div class="metric"><span class="up">+29.96%</span> · 거래량 18만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTFA2WWI4VVhvZnd6aWZRMWRISkdoTzl6d0NfeDEwZk5yTm91YmdvOEQ0WU54RmJpaFhFNXBiYWJiOWtRTF81bnJOTHlnTUNvNzlIMzNvSkdjZ3RYaGpxYnhhdW1EQzN2VkFQ?oc=5" target="_blank" rel="noopener">양 제약지수 동반하락, 엠에프씨 상한가</a></div><p class="news-cite">[newsmp.com, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTFA2WWI4VVhvZnd6aWZRMWRISkdoTzl6d0NfeDEwZk5yTm91YmdvOEQ0WU54RmJpaFhFNXBiYWJiOWtRTF81bnJOTHlnTUNvNzlIMzNvSkdjZ3RYaGpxYnhhdW1EQzN2VkFQ?oc=5" target="_blank" rel="noopener">양 제약지수 동반하락, 엠에프씨 상한가</a> <span class="section-note">— 의약뉴스, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_432980.png" alt="엠에프씨 차트">
@@ -96,7 +91,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">미투온</span><span class="badge limit-up">상한가</span></div>
   <div class="metric"><span class="up">+29.95%</span> · 거래량 197만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTFB6ZjJINXU0dDcweGpjclBCakJBWl9VczQxd1dtOHNIdWtYT2c1QjJDMDN4OEt5a2RxVnl5a2dJYzU4eWFGRnhIVklKTkxPTVpVZ0Q1OW9WTDZIOEl5YlBidw?oc=5" target="_blank" rel="noopener">카카오게임즈, 미투온에 980억 베팅…적자 탈출 &#x27;시험대&#x27;</a></div><p class="news-cite">[뉴스토마토, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTFB6ZjJINXU0dDcweGpjclBCakJBWl9VczQxd1dtOHNIdWtYT2c1QjJDMDN4OEt5a2RxVnl5a2dJYzU4eWFGRnhIVklKTkxPTVpVZ0Q1OW9WTDZIOEl5YlBidw?oc=5" target="_blank" rel="noopener">카카오게임즈, 미투온에 980억 베팅…적자 탈출 &#x27;시험대&#x27;</a> <span class="section-note">— 뉴스토마토, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_201490.png" alt="미투온 차트">
@@ -105,7 +100,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">기가레인</span><span class="badge limit-up">상한가</span></div>
   <div class="metric"><span class="up">+29.91%</span> · 거래량 271만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE9NeWYyc0tKOVZBWkgyOHdKWk43ZjU0aVJ6MGFnWnZ2Smx0alpqZmtyM0JKWmR6TWJ1RGQzSUxheHdRdVo1alVxbGhPaTZCaWhyc0taZS1CS1htQ3NDQXRuenoyU0xMMXdYOVE?oc=5" target="_blank" rel="noopener">[주식마감] &#x27;카카오게임즈 피인수 효과&#x27; 미투온 상한가... 큐라티스, 엠에프씨, 기가레인 등 급등</a></div><p class="news-cite">[금강일보, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE9NeWYyc0tKOVZBWkgyOHdKWk43ZjU0aVJ6MGFnWnZ2Smx0alpqZmtyM0JKWmR6TWJ1RGQzSUxheHdRdVo1alVxbGhPaTZCaWhyc0taZS1CS1htQ3NDQXRuenoyU0xMMXdYOVE?oc=5" target="_blank" rel="noopener">[주식마감] &#x27;카카오게임즈 피인수 효과&#x27; 미투온 상한가... 큐라티스, 엠에프씨, 기가레인 등 급등</a> <span class="section-note">— 금강일보, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_049080.png" alt="기가레인 차트">
@@ -114,7 +109,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">뷰티스킨</span><span class="badge limit-up">상한가</span></div>
   <div class="metric"><span class="up">+29.86%</span> · 거래량 473만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE5FbkVHVnkwbG9EV0Q1bFUyRldYNHhvN3BrRno4RkYzemFTdGZyNC1FNWl1TkhzRk1tMlJST1ljSG5LWDhXdTRHLWJQR2E4Q1JiT3dMbEdBMzBDZlVzeE9zbXI3R0JjRWcwU2I0RdIBb0FVX3lxTE1RQlN0TllNSTNTNzQ0WUlEX0FybmNIYVhXWU5YcjdUVkN6Mkl2bGlrMVZtZkV1ZTRzcHRRYmVrMm1qWmtUMUpscmxJREY2RC1kZkNkbzVKdExidmRmR3VVaHZjaXd0MzBjb2k2SWZzQQ?oc=5" target="_blank" rel="noopener">[공시]뷰티스킨, 300억원 공급계약…중장기 실적 발판</a></div><p class="news-cite">[한스경제, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE5FbkVHVnkwbG9EV0Q1bFUyRldYNHhvN3BrRno4RkYzemFTdGZyNC1FNWl1TkhzRk1tMlJST1ljSG5LWDhXdTRHLWJQR2E4Q1JiT3dMbEdBMzBDZlVzeE9zbXI3R0JjRWcwU2I0RdIBb0FVX3lxTE1RQlN0TllNSTNTNzQ0WUlEX0FybmNIYVhXWU5YcjdUVkN6Mkl2bGlrMVZtZkV1ZTRzcHRRYmVrMm1qWmtUMUpscmxJREY2RC1kZkNkbzVKdExidmRmR3VVaHZjaXd0MzBjb2k2SWZzQQ?oc=5" target="_blank" rel="noopener">[공시]뷰티스킨, 300억원 공급계약…중장기 실적 발판</a> <span class="section-note">— hansbiz.co.kr, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <div class="disc-item">▸ <a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260916900230" target="_blank" rel="noopener">단일판매ㆍ공급계약체결              </a> <span class="section-note">— 뷰티스킨, 20260916</span></div>
   <img class="chart-img" src="charts/2026-09-16_406820.png" alt="뷰티스킨 차트">
@@ -123,7 +118,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">아이티센피엔에스</span><span class="badge limit-up">상한가</span></div>
   <div class="metric"><span class="up">+29.85%</span> · 거래량 52만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiVEFVX3lxTFBGb2U5T3B4ZnRJdzZlanNOMkw0UXd3SXRJMm5ZZEhLVUdKZHZvM2JlVlhZY0N3V0swN2VEVXlnNEE0YXJEbnYwSEsyaWw3ZmkyR2RzZA?oc=5" target="_blank" rel="noopener">[급등락주 짚어보기] 미투온, 카카오게임즈 피인수에 ‘上’…뷰티스킨·아이티센피엔에스도 급등</a></div><p class="news-cite">[이투데이, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMiVEFVX3lxTFBGb2U5T3B4ZnRJdzZlanNOMkw0UXd3SXRJMm5ZZEhLVUdKZHZvM2JlVlhZY0N3V0swN2VEVXlnNEE0YXJEbnYwSEsyaWw3ZmkyR2RzZA?oc=5" target="_blank" rel="noopener">[급등락주 짚어보기] 미투온, 카카오게임즈 피인수에 ‘上’…뷰티스킨·아이티센피엔에스도 급등</a> <span class="section-note">— 이투데이, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_232830.png" alt="아이티센피엔에스 차트">
@@ -132,7 +127,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">빛샘전자</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">+26.45%</span> · 거래량 1,495만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFB2cnFhZ2ZWampOYmltMlJJT2xKN0dGZWM5X1Fpa09TVVZTdllJb2NjLTRUMnpqODR5Y0tJeHdEYUY1cFA1THdDQmlUS2tNMmkzZXc?oc=5" target="_blank" rel="noopener">코스피, 반도체주 반등에 6700선 안착</a></div><p class="news-cite">[매일경제 마켓, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFB2cnFhZ2ZWampOYmltMlJJT2xKN0dGZWM5X1Fpa09TVVZTdllJb2NjLTRUMnpqODR5Y0tJeHdEYUY1cFA1THdDQmlUS2tNMmkzZXc?oc=5" target="_blank" rel="noopener">코스피, 반도체주 반등에 6700선 안착</a> <span class="section-note">— 매일경제 마켓, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_072950.png" alt="빛샘전자 차트">
@@ -141,7 +136,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">센서뷰</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">+19.10%</span> · 거래량 2,458만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMickFVX3lxTE5uM05OT0Q5SnA1Zmgta0dTdjJ0TmJpdE1YQktGNlpSSEsyQjZEaDQ1NktsUG54Y2NQTF9yaEFPLXF6WHZEbnM0em5LcGtPem0tLUZMZWVzaFdJejJjcllPN0lFbjhqbkRSaEN5M0dFZmNfQQ?oc=5" target="_blank" rel="noopener">센서뷰 주가, 9월 16일 애프터마켓 1,334원 13.73% 상승</a></div><p class="news-cite">[톱스타뉴스, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMickFVX3lxTE5uM05OT0Q5SnA1Zmgta0dTdjJ0TmJpdE1YQktGNlpSSEsyQjZEaDQ1NktsUG54Y2NQTF9yaEFPLXF6WHZEbnM0em5LcGtPem0tLUZMZWVzaFdJejJjcllPN0lFbjhqbkRSaEN5M0dFZmNfQQ?oc=5" target="_blank" rel="noopener">센서뷰 주가, 9월 16일 애프터마켓 1,334원 13.73% 상승</a> <span class="section-note">— 톱스타뉴스, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_321370.png" alt="센서뷰 차트">
@@ -150,7 +145,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">대한광통신</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">+13.86%</span> · 거래량 4,566만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTE5jRFJhZzczc3BmWWozLW4zZUNaTnFOMnFBUE5IVVpMVmwzQzlxUkZnRzA4UG84My11eDlhOTNPdnpyeC04ckN6d2FvUFYybGVrVVE?oc=5" target="_blank" rel="noopener">&quot;통신장비 부족해&quot;…대한광통신 14% 쑥</a></div><p class="news-cite">[매일경제 마켓, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTE5jRFJhZzczc3BmWWozLW4zZUNaTnFOMnFBUE5IVVpMVmwzQzlxUkZnRzA4UG84My11eDlhOTNPdnpyeC04ckN6d2FvUFYybGVrVVE?oc=5" target="_blank" rel="noopener">&quot;통신장비 부족해&quot;…대한광통신 14% 쑥</a> <span class="section-note">— 매일경제 마켓, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_010170.png" alt="대한광통신 차트">
@@ -159,7 +154,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">동국산업</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">+13.50%</span> · 거래량 1,482만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMickFVX3lxTE5vcFZkV2ZTVUtMNFM0b0JOaFFWdzhfdTI0d0hHU3dRaE53RURYQlREOTg5RDE5bVhXY2NnLTd4cVh6TE5VZHVYbnNpRWpwalBweXIxd3BJc1JpMWlYMHVsanltUHI0OHRPWU92ZmJ6T2ZWUQ?oc=5" target="_blank" rel="noopener">동국산업 주가, 9월 16일 애프터마켓 3,590원 16.75% 상승</a></div><p class="news-cite">[톱스타뉴스, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMickFVX3lxTE5vcFZkV2ZTVUtMNFM0b0JOaFFWdzhfdTI0d0hHU3dRaE53RURYQlREOTg5RDE5bVhXY2NnLTd4cVh6TE5VZHVYbnNpRWpwalBweXIxd3BJc1JpMWlYMHVsanltUHI0OHRPWU92ZmJ6T2ZWUQ?oc=5" target="_blank" rel="noopener">동국산업 주가, 9월 16일 애프터마켓 3,590원 16.75% 상승</a> <span class="section-note">— 톱스타뉴스, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_005160.png" alt="동국산업 차트">
@@ -168,7 +163,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">이노인스트루먼트</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">+8.98%</span> · 거래량 1,108만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE5FLXdGa084R1dTV2NzU21YTE1aZXl1bmRlbkxQRXMyWHhMZFhaQUxVaHViY2plbzBZRmxjNEFLSGJOeEluVnY4d05BSGNIZEZob3MwQVZCS2tvNDJmN3E1Sg?oc=5" target="_blank" rel="noopener">코스피 4거래일 하락 끝 반등…삼성전자·SK하이닉스에 기관 매수 몰렸다</a></div><p class="news-cite">[theconnectmoney.com, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE5FLXdGa084R1dTV2NzU21YTE1aZXl1bmRlbkxQRXMyWHhMZFhaQUxVaHViY2plbzBZRmxjNEFLSGJOeEluVnY4d05BSGNIZEZob3MwQVZCS2tvNDJmN3E1Sg?oc=5" target="_blank" rel="noopener">코스피 4거래일 하락 끝 반등…삼성전자·SK하이닉스에 기관 매수 몰렸다</a> <span class="section-note">— theconnectmoney.com, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_215790.png" alt="이노인스트루먼트 차트">
@@ -177,7 +172,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">빛과전자</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">+7.04%</span> · 거래량 7,343만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMickFVX3lxTE1GNmx5SFdmRHBpYTFIcS1kc1hBYmRMYlh1bVEtZC10b0k2dXJPcTJsczRTX3Bodkk0NGYxSmpxekJ0RjA2ZkdrdWZPb2FiWTA5aGVPa2lxbjFvX0FDOWc1cHdoUnViU3JyZ3lxV0JFWC1oUQ?oc=5" target="_blank" rel="noopener">빛과전자 주가, 9월 16일 애프터마켓 4,400원 6.80% 상승</a></div><p class="news-cite">[중앙이코노미뉴스, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMickFVX3lxTE1GNmx5SFdmRHBpYTFIcS1kc1hBYmRMYlh1bVEtZC10b0k2dXJPcTJsczRTX3Bodkk0NGYxSmpxekJ0RjA2ZkdrdWZPb2FiWTA5aGVPa2lxbjFvX0FDOWc1cHdoUnViU3JyZ3lxV0JFWC1oUQ?oc=5" target="_blank" rel="noopener">빛과전자 주가, 9월 16일 애프터마켓 4,400원 6.80% 상승</a> <span class="section-note">— 중앙이코노미뉴스, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_069540.png" alt="빛과전자 차트">
@@ -186,7 +181,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">씨피시스템</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">+5.00%</span> · 거래량 2,765만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMickFVX3lxTE8wMWxsT28ybWNMOWg0NHZsZzZWZHNRTHdTcTJYbERMVEsyNWRuYmhoV3pxa2ZTaWwzbTdERkNoR2xPV2tWNXUxWkRKTkNVZmxwZGZacDB1THlyRTQ0YW5UY0h5NG5HWGVkQkRYa2JqN2xLQQ?oc=5" target="_blank" rel="noopener">씨피시스템 주가, 9월 16일 애프터마켓 4,685원 4.11% 상승</a></div><p class="news-cite">[톱스타뉴스, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMickFVX3lxTE8wMWxsT28ybWNMOWg0NHZsZzZWZHNRTHdTcTJYbERMVEsyNWRuYmhoV3pxa2ZTaWwzbTdERkNoR2xPV2tWNXUxWkRKTkNVZmxwZGZacDB1THlyRTQ0YW5UY0h5NG5HWGVkQkRYa2JqN2xLQQ?oc=5" target="_blank" rel="noopener">씨피시스템 주가, 9월 16일 애프터마켓 4,685원 4.11% 상승</a> <span class="section-note">— 톱스타뉴스, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_413630.png" alt="씨피시스템 차트">
@@ -195,7 +190,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">샌즈랩</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">+3.77%</span> · 거래량 1,102만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFBib2djTGNxdV9YMk54UkFOQzlEcDh4VEhrSTJpQXNPc3YzQVZFWlJEY2FYTDgxRHc2bFdKRllscHNJb19iOElHMWFPMnJlNFVBTnc?oc=5" target="_blank" rel="noopener">젠슨 황이 콕 집은 &#x27;AI 보안&#x27;…안랩 &quot;AI 공격, AI로 막는다&quot;</a></div><p class="news-cite">[매일경제 마켓, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFBib2djTGNxdV9YMk54UkFOQzlEcDh4VEhrSTJpQXNPc3YzQVZFWlJEY2FYTDgxRHc2bFdKRllscHNJb19iOElHMWFPMnJlNFVBTnc?oc=5" target="_blank" rel="noopener">젠슨 황이 콕 집은 &#x27;AI 보안&#x27;…안랩 &quot;AI 공격, AI로 막는다&quot;</a> <span class="section-note">— 매일경제 마켓, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_411080.png" alt="샌즈랩 차트">
@@ -204,7 +199,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">삼성전자</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">+2.01%</span> · 거래량 1,176만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTFBpZFhPSjJ2NmJLQ3g5TGtCdmFKMFJnT1V0TlZYVGtEUHM2U0hlZ2tGQ1pDY2NaR2oxdGFZVGpWUXVBV0lKQ0xVdVRDNU9VTzc1TkRXdDh6ZmJhQQ?oc=5" target="_blank" rel="noopener">기관 뭉칫돈에 급등한 DB하이텍…&quot;삼성전자·TSMC 공백 집중수혜&quot;</a></div><p class="news-cite">[한국경제, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMilwFBVV95cUxQeEg5c1FEV1dsX0oyS1NGODRvZXUzcGItNF9scDM0TVBCVzlobUdabFNmSmhqQk1XMkdFMEtmNlZBWTBYaHdpalExWnhPVVVFTXQ1V3RFVWVGbDR4b1Y0V3llSF9MT0ZnTlpaaWNaamp0U25qNzV2bkE5a3VpWkxwMElLLXBlWU5SY21LRTh6YW5IQ3JGV21R?oc=5" target="_blank" rel="noopener">삼성전자</a> <span class="section-note">— 매일경제 마켓, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_005930.png" alt="삼성전자 차트">
@@ -213,7 +208,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">한컴위드</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">+1.15%</span> · 거래량 1,278만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE9Tc1I3Z3oxRG9nbjJMVFBZdHdfa0txQVNDbzA3d3NKR2MyYXBLcGtMRkNlcVBZZl9zak1fd3lMZTNQd01pU2NNSVR5UzNlS0xaMHo2LXpKYW85ZlBRN0RPTDlQRHZiOUcwSUFv?oc=5" target="_blank" rel="noopener">한컴-대구공공시설관리공단, AI 기술 활용 &#x27;데이터 기반 행정 혁신&#x27; 추진</a></div><p class="news-cite">[todaymild.com, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE9Tc1I3Z3oxRG9nbjJMVFBZdHdfa0txQVNDbzA3d3NKR2MyYXBLcGtMRkNlcVBZZl9zak1fd3lMZTNQd01pU2NNSVR5UzNlS0xaMHo2LXpKYW85ZlBRN0RPTDlQRHZiOUcwSUFv?oc=5" target="_blank" rel="noopener">한컴-대구공공시설관리공단, AI 기술 활용 &#x27;데이터 기반 행정 혁신&#x27; 추진</a> <span class="section-note">— 마일드경제, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_054920.png" alt="한컴위드 차트">
@@ -222,7 +217,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">한국첨단소재</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">+0.45%</span> · 거래량 3,196만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiRkFVX3lxTE02THA5Skxva2xLa3NxS3gxZ21FREh0Rm42elotMW1GbVZJdDlSSVNHbmFINE5WMTZRVnR4R3J5TGRncFI2c3c?oc=5" target="_blank" rel="noopener">[머니게임] 사토시홀딩스, &#x27;빚 돌려막기&#x27;로 대주주 CB 50억 현금화?</a></div><p class="news-cite">[v.daum.net, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE85SU9MVzNLel9QVXlaaTliMV9QSnhmd01qQ3ZCbkl1dS1ETXBfbzl5Z1B6bHM5X2ZGUVU3TUF1TFBRWjNma2Y1Z3k0OHFDTl9Ed0c4ODNBeHnSAVhBVV95cUxPOUlPTFczS3pfUFV5Wmk5YjFfUEp4ZndNakN2Qm5JdXUtRE1wX285eWdQemxzOV9mRlFVN01BdUxQUVozZmtmNWd5NDhxQ05fRHdHODgzQXh5?oc=5" target="_blank" rel="noopener">[머니게임] 사토시홀딩스, 빚 돌려막기로 대주주 CB 50억 현금화?</a> <span class="section-note">— 아주경제, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_062970.png" alt="한국첨단소재 차트">
@@ -231,7 +226,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">현대약품</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">-1.48%</span> · 거래량 1,253만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE9JaERBQnBLYU00Y3BzSEFXNEEyWmJhUEk2UHdldjRhME1tTS1Fa210N082OTVSY3RtSjBXeWxUTHcyX3B5UDFJM01aZUxGOG1qR3FMa251OHFfbzktZ3lfQw?oc=5" target="_blank" rel="noopener">현대약품 &quot;&#x27;미프진&#x27;, 불법 유통 여성 피해 줄이기 위해 도입 결정&quot;</a></div><p class="news-cite">[뉴스1, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTE9JaERBQnBLYU00Y3BzSEFXNEEyWmJhUEk2UHdldjRhME1tTS1Fa210N082OTVSY3RtSjBXeWxUTHcyX3B5UDFJM01aZUxGOG1qR3FMa251OHFfbzktZ3lfQw?oc=5" target="_blank" rel="noopener">현대약품 &quot;&#x27;미프진&#x27;, 불법 유통 여성 피해 줄이기 위해 도입 결정&quot;</a> <span class="section-note">— 뉴스1, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_004310.png" alt="현대약품 차트">
@@ -240,7 +235,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
   <div class="card-head"><span class="name">광전자</span><span class="badge high-volume">거래량 급증</span></div>
   <div class="metric"><span class="up">-1.88%</span> · 거래량 1,224만 주</div>
   <div class="subhead">◎ 관련기사</div>
-  <div class="news-title"><a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE50UVFHQ05INVh3SHZqYmVrSGJCeldwZm11ZFFSRVluT19MakdQc01kNHVoanByd2k3ajBQODFoSWJqb2xPSktzMUZKTHBJbzJKNjNrSHdlbkTSAVhBVV95cUxOdFFRR0NOSDVYd0h2amJla0hiQnpXcGZtdWRRUkVZbk9fTGpHUHNNZDR1aGpwcndpN2owUDgxaEliam9sT0pLczFGSkxwSW8ySjYza0h3ZW5E?oc=5" target="_blank" rel="noopener">[퇴근길 애프터 시황] 반도체주 강세 이어져…코스닥선 급등주 속출</a></div><p class="news-cite">[아주경제, 2026-09-16]</p>
+  <div class="news-item">▸ <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE50UVFHQ05INVh3SHZqYmVrSGJCeldwZm11ZFFSRVluT19MakdQc01kNHVoanByd2k3ajBQODFoSWJqb2xPSktzMUZKTHBJbzJKNjNrSHdlbkTSAVhBVV95cUxOdFFRR0NOSDVYd0h2amJla0hiQnpXcGZtdWRRUkVZbk9fTGpHUHNNZDR1aGpwcndpN2owUDgxaEliam9sT0pLczFGSkxwSW8ySjYza0h3ZW5E?oc=5" target="_blank" rel="noopener">[퇴근길 애프터 시황] 반도체주 강세 이어져…코스닥선 급등주 속출</a> <span class="section-note">— 아주경제, 2026-09-16</span></div>
   <div class="subhead">◎ 공시</div>
   <p class="empty">공시 없음 / 미조회</p>
   <img class="chart-img" src="charts/2026-09-16_017900.png" alt="광전자 차트">
