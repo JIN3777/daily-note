@@ -2,6 +2,8 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
+
+import config  # noqa: F401  (pykrx가 모듈 import 시점에 KRX_ID/KRX_PW를 읽으므로, .env 로딩이 먼저 실행돼야 함)
 from pykrx import stock
 
 OHLCV_COLUMNS = ["시가", "고가", "저가", "종가", "거래량", "거래대금", "등락률"]

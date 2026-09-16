@@ -34,6 +34,9 @@ cp .env.example .env
 
 `.env`에 아래 키를 채워 넣습니다.
 
+- `KRX_ID` / `KRX_PW`: https://data.krx.co.kr 무료 회원가입 후 그 아이디/비밀번호. **필수입니다** —
+  pykrx가 시세를 조회하려면 KRX 로그인 세션이 있어야 하고, 없으면 모든 조회가
+  `Expecting value: line 1 column 1 (char 0)` 에러로 실패합니다.
 - `DART_API_KEY`: https://opendart.fss.or.kr (회원가입 후 즉시 발급, 무료)
 - `NAVER_CLIENT_ID` / `NAVER_CLIENT_SECRET`: https://developers.naver.com/apps (애플리케이션 등록 → "검색" API 사용 설정, 무료)
 
