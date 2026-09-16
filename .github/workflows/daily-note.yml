@@ -5,7 +5,12 @@ on:
     # 07:30 UTC = 16:30 KST, 평일만. 장 마감(15:30 KST) 후 데이터가 안정적으로
     # 집계될 시간을 감안해 여유를 뒀다.
     - cron: "30 7 * * 1-5"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "생성할 날짜 (YYYYMMDD). 비워두면 오늘(Asia/Seoul) 날짜 사용"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -41,7 +46,13 @@ jobs:
 
       - name: Determine target trading date (Asia/Seoul)
         id: date
-        run: echo "date=$(TZ='Asia/Seoul' date +%Y%m%d)" >> "$GITHUB_OUTPUT"
+        run: |
+          input_date="${{ github.event.inputs.date }}"
+          if [ -n "$input_date" ]; then
+            echo "date=$input_date" >> "$GITHUB_OUTPUT"
+          else
+            echo "date=$(TZ='Asia/Seoul' date +%Y%m%d)" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Run daily note generation
         env:
