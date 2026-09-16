@@ -53,7 +53,11 @@ python scripts/run_daily.py --date 20260916 --no-news --no-disclosures
 python scripts/run_daily.py --date 20260916 --lookback-days 60
 ```
 
-실행하면 `notes/2026-09-16.md`가 생성됩니다.
+실행하면 `notes/2026-09-16.md`(마크다운)와 `notes/2026-09-16.html`(브라우저용)이 함께 생성되고,
+`notes/index.html`(전체 목록 페이지)도 자동으로 갱신됩니다.
+
+**결과 확인은 `notes/index.html`을 더블클릭해서 브라우저로 여세요.** 날짜별 카드 목록이 나오고,
+클릭하면 그날의 종목/뉴스/공시가 정리된 페이지로 이동합니다.
 
 섹션별로 따로 실행해서 JSON으로 결과만 뽑아볼 수도 있습니다.
 
@@ -94,10 +98,12 @@ scripts/
   pattern_logic.py              # 섹션2 스크리닝 순수 로직 (테스트됨)
   section1_limit_up_volume.py   # 섹션1 오케스트레이션
   section2_volume_pattern.py    # 섹션2 오케스트레이션
-  build_note.py                 # JSON -> 마크다운 노트
+  build_note.py                 # JSON -> 마크다운(.md) + 브라우저용(.html) 노트
+  build_index.py                # notes/index.html(전체 목록 페이지) 생성/갱신
   run_daily.py                  # 전체 실행 진입점
 templates/daily-note-template.md  # 수기로 채울 때 참고할 빈 템플릿
-notes/YYYY-MM-DD.md               # 생성된 일일 노트
+notes/index.html                   # 날짜별 노트 목록 (더블클릭해서 열기)
+notes/YYYY-MM-DD.md, .html         # 생성된 일일 노트 (마크다운 / 브라우저용)
 tests/                             # 순수 로직 단위 테스트
 ```
 

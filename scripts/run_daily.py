@@ -4,10 +4,8 @@
     python scripts/run_daily.py --date 20260916
 """
 import argparse
-from datetime import datetime
 
-from build_note import build_note
-from config import NOTES_DIR
+from build_note import save_note
 from section1_limit_up_volume import build_section1
 from section2_volume_pattern import DEFAULT_LOOKBACK_CALENDAR_DAYS, build_section2
 
@@ -36,12 +34,9 @@ def main():
     print(f"  -> {len(section2_items)}건 발견")
 
     print("[3/3] 노트 작성 중...")
-    note = build_note(args.date, section1_items, section2_items)
-    dt = datetime.strptime(args.date, "%Y%m%d")
-    out_path = NOTES_DIR / f"{dt:%Y-%m-%d}.md"
-    with open(out_path, "w", encoding="utf-8") as f:
-        f.write(note)
-    print(f"완료: {out_path}")
+    md_path, html_path = save_note(args.date, section1_items, section2_items)
+    print(f"완료: {md_path}")
+    print(f"브라우저로 보기: {html_path}  (또는 notes/index.html 에서 전체 목록)")
 
 
 if __name__ == "__main__":

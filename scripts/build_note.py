@@ -1,8 +1,10 @@
-"""섹션 1/2 결과(JSON)를 이미지 예시와 같은 형식의 마크다운 노트로 변환."""
+"""섹션 1/2 결과(JSON)를 마크다운 노트 + 브라우저에서 보는 HTML 페이지로 변환."""
 import argparse
+import html
 import json
 from datetime import datetime
 
+from build_index import update_index
 from config import NOTES_DIR
 
 
@@ -13,6 +15,15 @@ def _fmt_volume(volume: int) -> str:
 def _fmt_date_kr(date_str: str) -> str:
     dt = datetime.strptime(date_str, "%Y%m%d") if len(date_str) == 8 else datetime.strptime(date_str, "%Y-%m-%d")
     return f"{dt.year}년 {dt.month}월 {dt.day}일"
+
+
+def _to_date_obj(date_str: str) -> datetime:
+    return datetime.strptime(date_str, "%Y%m%d") if len(date_str) == 8 else datetime.strptime(date_str, "%Y-%m-%d")
+
+
+# ---------------------------------------------------------------------------
+# 마크다운
+# ---------------------------------------------------------------------------
 
 
 def render_section1(date: str, items: list[dict]) -> str:
@@ -80,12 +91,171 @@ def build_note(date: str, section1_items: list[dict], section2_items: list[dict]
     return "\n".join([header, render_section1(date, section1_items), render_section2(section2_items)])
 
 
+# ---------------------------------------------------------------------------
+# HTML (브라우저에서 보는 페이지)
+# ---------------------------------------------------------------------------
+
+_HTML_STYLE = """
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff; --fg: #1a1a1a; --muted: #6b7280; --card: #f8f9fb;
+  --border: #e5e7eb; --accent: #c0392b; --accent-bg: #fdecea;
+  --accent2: #2563eb; --accent2-bg: #eef2ff; --link: #2563eb;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16181d; --fg: #e6e6e6; --muted: #9aa0a6; --card: #1e2128;
+    --border: #2b2f38; --accent: #ff6b5e; --accent-bg: #3a2020;
+    --accent2: #6ea8fe; --accent2-bg: #1c2333; --link: #6ea8fe;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); margin: 0; padding: 24px 16px 64px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif;
+  line-height: 1.55;
+}
+.wrap { max-width: 760px; margin: 0 auto; }
+.topnav { margin-bottom: 20px; }
+.topnav a { color: var(--muted); text-decoration: none; font-size: 14px; }
+.topnav a:hover { color: var(--link); }
+h1 { font-size: 22px; margin: 0 0 4px; }
+h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+.section-note { color: var(--muted); font-size: 13px; margin: -8px 0 16px; }
+.card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 18px; margin-bottom: 14px;
+}
+.card-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.name { font-size: 16px; font-weight: 600; }
+.badge {
+  font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+}
+.badge.limit-up { color: var(--accent); background: var(--accent-bg); }
+.badge.high-volume { color: var(--accent2); background: var(--accent2-bg); }
+.metric { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+.metric .up { color: var(--accent); font-weight: 600; }
+.subhead { font-size: 13px; font-weight: 700; color: var(--muted); margin: 12px 0 6px; }
+.news-item, .disc-item { font-size: 14px; margin-bottom: 8px; }
+.news-item a, .disc-item a { color: var(--link); text-decoration: none; }
+.news-item a:hover, .disc-item a:hover { text-decoration: underline; }
+.news-summary { color: var(--muted); font-size: 13px; margin: 2px 0 0 2px; }
+.empty { color: var(--muted); font-size: 14px; }
+.gap-pos { color: #16a34a; }
+.gap-neg { color: var(--accent); }
+</style>
+"""
+
+
+def _esc(v) -> str:
+    return html.escape(str(v)) if v is not None else ""
+
+
+def render_section1_html(items: list[dict]) -> str:
+    if not items:
+        return '<h2>1. 상한가 / 거래량 1,000만주 이상 종목</h2><p class="empty">해당 종목 없음</p>'
+
+    cards = []
+    for item in items:
+        badge = (
+            '<span class="badge limit-up">상한가</span>'
+            if item["is_limit_up"]
+            else '<span class="badge high-volume">거래량 급증</span>'
+        )
+        news_html = "".join(
+            f'<div class="news-item">▸ <a href="{_esc(n["url"])}" target="_blank" rel="noopener">{_esc(n["title"])}</a>'
+            f' <span class="section-note">— {_esc(n["pub_date"])}</span>'
+            + (f'<div class="news-summary">{_esc(n["summary"])}</div>' if n.get("summary") else "")
+            + "</div>"
+            for n in item.get("news", [])
+        ) or '<p class="empty">관련기사 없음 / 미조회</p>'
+
+        disc_html = "".join(
+            f'<div class="disc-item">▸ <a href="{_esc(d["url"])}" target="_blank" rel="noopener">{_esc(d["title"])}</a>'
+            f' <span class="section-note">— {_esc(d["submitter"])}, {_esc(d["date"])}</span></div>'
+            for d in item.get("disclosures", [])
+        ) or '<p class="empty">공시 없음 / 미조회</p>'
+
+        cards.append(
+            f"""
+<div class="card">
+  <div class="card-head"><span class="name">{_esc(item['name'])}</span>{badge}</div>
+  <div class="metric"><span class="up">{item['change_pct']:+.2f}%</span> · 거래량 {_fmt_volume(item['volume'])}</div>
+  <div class="subhead">◎ 관련기사</div>
+  {news_html}
+  <div class="subhead">◎ 공시</div>
+  {disc_html}
+</div>"""
+        )
+    return f'<h2>1. 상한가 / 거래량 1,000만주 이상 종목</h2>{"".join(cards)}'
+
+
+def render_section2_html(items: list[dict]) -> str:
+    note = '<p class="section-note">폭증 전일 대비 500~1000%, 급감 전일 대비 25% 이하, 급감일 종가가 5일선 대비 -3% 이내</p>'
+    if not items:
+        return f"<h2>2. 거래량 폭증 후 급감 패턴 종목</h2>{note}" + '<p class="empty">해당 종목 없음</p>'
+
+    cards = []
+    for item in items:
+        gap_class = "gap-pos" if item["ma5_gap_pct"] >= 0 else "gap-neg"
+        cards.append(
+            f"""
+<div class="card">
+  <div class="card-head"><span class="name">{_esc(item['name'])}</span></div>
+  <div class="metric">폭증일 {_esc(item['spike_date'])} · 거래량 {_fmt_volume(item['spike_volume'])}
+    (전일比 {item['spike_ratio_pct']:.0f}%)</div>
+  <div class="metric">급감일 {_esc(item['crash_date'])} · 거래량 {_fmt_volume(item['crash_volume'])}
+    (전일比 {item['crash_ratio_pct']:.0f}%)</div>
+  <div class="metric">종가 {item['crash_close']:,.0f}원 / 5일선 {item['crash_ma5']:,.0f}원
+    (이격률 <span class="{gap_class}">{item['ma5_gap_pct']:+.2f}%</span>)</div>
+</div>"""
+        )
+    return f"<h2>2. 거래량 폭증 후 급감 패턴 종목</h2>{note}{''.join(cards)}"
+
+
+def build_note_html(date: str, section1_items: list[dict], section2_items: list[dict]) -> str:
+    title = f"{_fmt_date_kr(date)} 시황 노트"
+    return f"""<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{_esc(title)}</title>
+<style>{_HTML_STYLE}
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav"><a href="index.html">&larr; 전체 노트 목록</a></div>
+  <h1>{_esc(title)}</h1>
+  {render_section1_html(section1_items)}
+  {render_section2_html(section2_items)}
+</div>
+</body>
+</html>"""
+
+
+def save_note(date: str, section1_items: list[dict], section2_items: list[dict]):
+    """마크다운(.md) + HTML(.html)을 둘 다 저장하고, 목록(index.html)을 갱신한다."""
+    dt = _to_date_obj(date)
+    date_str = f"{dt:%Y-%m-%d}"
+
+    md_path = NOTES_DIR / f"{date_str}.md"
+    with open(md_path, "w", encoding="utf-8") as f:
+        f.write(build_note(date, section1_items, section2_items))
+
+    html_path = NOTES_DIR / f"{date_str}.html"
+    with open(html_path, "w", encoding="utf-8") as f:
+        f.write(build_note_html(date, section1_items, section2_items))
+
+    update_index(date_str, len(section1_items), len(section2_items))
+    return md_path, html_path
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="섹션 JSON을 노트 마크다운으로 변환")
+    parser = argparse.ArgumentParser(description="섹션 JSON을 노트(마크다운+HTML)로 변환")
     parser.add_argument("--date", required=True, help="YYYYMMDD")
     parser.add_argument("--section1", required=True, help="섹션1 JSON 경로")
     parser.add_argument("--section2", required=True, help="섹션2 JSON 경로")
-    parser.add_argument("--out", help="저장 경로 (기본: notes/YYYY-MM-DD.md)")
     args = parser.parse_args()
 
     with open(args.section1, encoding="utf-8") as f:
@@ -93,10 +263,6 @@ if __name__ == "__main__":
     with open(args.section2, encoding="utf-8") as f:
         section2_items = json.load(f)
 
-    note = build_note(args.date, section1_items, section2_items)
-
-    dt = datetime.strptime(args.date, "%Y%m%d")
-    out_path = args.out or (NOTES_DIR / f"{dt:%Y-%m-%d}.md")
-    with open(out_path, "w", encoding="utf-8") as f:
-        f.write(note)
-    print(f"노트 생성 완료: {out_path}")
+    md_path, html_path = save_note(args.date, section1_items, section2_items)
+    print(f"노트 생성 완료: {md_path}")
+    print(f"HTML 생성 완료: {html_path}")
