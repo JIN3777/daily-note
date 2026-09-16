@@ -11,8 +11,6 @@ NOTES_DIR = ROOT_DIR / "notes"
 load_dotenv(ROOT_DIR / ".env")
 
 DART_API_KEY = os.environ.get("DART_API_KEY", "")
-NAVER_CLIENT_ID = os.environ.get("NAVER_CLIENT_ID", "")
-NAVER_CLIENT_SECRET = os.environ.get("NAVER_CLIENT_SECRET", "")
 
 CACHE_DIR.mkdir(exist_ok=True)
 NOTES_DIR.mkdir(exist_ok=True)

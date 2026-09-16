@@ -5,7 +5,7 @@
 
 ## 왜 로컬에서 실행하나요?
 
-KRX 시세, DART 공시, 네이버 뉴스 검색 모두 실시간 데이터가 필요합니다. 이 스크립트를
+KRX 시세, DART 공시, 뉴스 검색 모두 실시간 데이터가 필요합니다. 이 스크립트를
 클라우드/샌드박스 환경이 아니라 **인터넷이 정상적으로 열려 있는 본인 PC**에서 실행해야
 합니다 (사내망/방화벽 환경도 해당 사이트 접속이 막혀 있다면 동작하지 않습니다).
 
@@ -13,7 +13,7 @@ KRX 시세, DART 공시, 네이버 뉴스 검색 모두 실시간 데이터가 �
 
 ### 1. 상한가 / 거래량 1,000만주 이상 종목
 - 당일 등락률이 +29.5% 이상(상한가) 이거나, 거래량이 1,000만주 이상인 종목
-- 종목별로 관련 뉴스(네이버 뉴스 검색, 원문 링크 포함)와 공시(DART, 상세 링크 포함)를 함께 기록
+- 종목별로 관련 뉴스(Google News, 원문 링크 포함)와 공시(DART, 상세 링크 포함)를 함께 기록
 
 ### 2. 거래량 폭증 → 급감 패턴 종목
 - 어느 날 거래량이 전일 대비 500~1000%로 폭증
@@ -38,7 +38,8 @@ cp .env.example .env
   pykrx가 시세를 조회하려면 KRX 로그인 세션이 있어야 하고, 없으면 모든 조회가
   `Expecting value: line 1 column 1 (char 0)` 에러로 실패합니다.
 - `DART_API_KEY`: https://opendart.fss.or.kr (회원가입 후 즉시 발급, 무료)
-- `NAVER_CLIENT_ID` / `NAVER_CLIENT_SECRET`: https://developers.naver.com/apps (애플리케이션 등록 → "검색" API 사용 설정, 무료)
+
+뉴스는 Google News RSS를 사용하므로 별도 키 발급이 필요 없습니다.
 
 ## 사용법
 
@@ -93,7 +94,7 @@ scripts/
   config.py                    # .env 로드
   krx_data.py                  # pykrx 시세 조회
   dart_client.py                # DART 공시 API
-  news_client.py                # 네이버 뉴스 검색 API
+  news_client.py                # Google News RSS 검색 (키 불필요)
   limit_up_logic.py             # 섹션1 스크리닝 순수 로직 (테스트됨)
   pattern_logic.py              # 섹션2 스크리닝 순수 로직 (테스트됨)
   section1_limit_up_volume.py   # 섹션1 오케스트레이션
