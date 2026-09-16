@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시황 노트 목록</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff; --fg: #1a1a1a; --muted: #6b7280; --card: #f8f9fb;
+  --border: #e5e7eb; --link: #2563eb; --accent: #c0392b; --accent2: #2563eb;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16181d; --fg: #e6e6e6; --muted: #9aa0a6; --card: #1e2128;
+    --border: #2b2f38; --link: #6ea8fe; --accent: #ff6b5e; --accent2: #6ea8fe;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); margin: 0; padding: 24px 16px 64px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif;
+}
+.wrap { max-width: 640px; margin: 0 auto; }
+h1 { font-size: 22px; margin: 0 0 20px; }
+.row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px 18px; margin-bottom: 10px; text-decoration: none; color: var(--fg);
+}
+.row:hover { border-color: var(--link); }
+.date { font-weight: 600; font-size: 15px; }
+.counts { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.counts .n1 { color: var(--accent); font-weight: 600; }
+.counts .n2 { color: var(--accent2); font-weight: 600; }
+.empty { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>매일 시황 노트</h1>
+  <a class="row" href="2026-09-17.html"><span class="date">2026년 9월 17일</span><span class="counts"><span class="n1">상한가/거래량 0</span> · <span class="n2">패턴 0</span></span></a>
+</div>
+</body>
+</html>
