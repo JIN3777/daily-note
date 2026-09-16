@@ -9,7 +9,7 @@ from datetime import datetime
 from build_note import build_note
 from config import NOTES_DIR
 from section1_limit_up_volume import build_section1
-from section2_volume_pattern import build_section2
+from section2_volume_pattern import DEFAULT_LOOKBACK_CALENDAR_DAYS, build_section2
 
 
 def main():
@@ -18,7 +18,10 @@ def main():
     parser.add_argument("--no-news", action="store_true", help="뉴스 조회 생략")
     parser.add_argument("--no-disclosures", action="store_true", help="공시 조회 생략")
     parser.add_argument(
-        "--lookback-days", type=int, default=90, help="섹션2용 과거 달력일 조회 범위"
+        "--lookback-days",
+        type=int,
+        default=DEFAULT_LOOKBACK_CALENDAR_DAYS,
+        help="섹션2 패턴 판정용 과거 달력일 조회 범위 (결과는 항상 --date 당일 급감 종목만 표시)",
     )
     args = parser.parse_args()
 

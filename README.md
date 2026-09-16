@@ -19,6 +19,9 @@ KRX 시세, DART 공시, 네이버 뉴스 검색 모두 실시간 데이터가 �
 - 어느 날 거래량이 전일 대비 500~1000%로 폭증
 - 이후 며칠 내에 거래량이 전일 대비 25% 이하로 급감
 - 급감한 날 종가가 5일 이동평균선 위이거나, 아래여도 -3% 이내인 종목만 채택
+- 판정 자체는 과거 며칠치 데이터가 필요하지만(내부적으로만 사용), **결과는 항상
+  `--date`로 지정한 당일이 급감일인 종목만** 노트에 표시됩니다. 과거 매치까지 전부 보고
+  싶다면 `--all-window` 옵션을 사용하세요.
 
 ## 설치
 
@@ -43,8 +46,8 @@ python scripts/run_daily.py --date 20260916
 # 뉴스/공시 API 키 없이 시세 스크리닝만 먼저 해보고 싶을 때
 python scripts/run_daily.py --date 20260916 --no-news --no-disclosures
 
-# 섹션2 스크리닝 기간(기본 90일) 조정
-python scripts/run_daily.py --date 20260916 --lookback-days 120
+# 섹션2 패턴 판정용 조회 기간(기본 35일) 조정 - 결과 범위가 아니라 계산용 범위입니다
+python scripts/run_daily.py --date 20260916 --lookback-days 60
 ```
 
 실행하면 `notes/2026-09-16.md`가 생성됩니다.
