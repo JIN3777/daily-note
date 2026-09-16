@@ -38,11 +38,11 @@ def render_section1(date: str, items: list[dict]) -> str:
         lines.append(f"— 등락률 {item['change_pct']:+.2f}% / 거래량 {_fmt_volume(item['volume'])}")
         lines.append("")
         lines.append("**◎ 관련기사**")
-        if item.get("news"):
-            for n in item["news"]:
-                lines.append(f"- [{n['title']}]({n['url']}) — {n['pub_date']}")
-                if n.get("summary"):
-                    lines.append(f"  > {n['summary']}")
+        news = item.get("news")
+        if news:
+            lines.append(f"- [{news['title']}]({news['url']}) — {news.get('source', '')}, {news['pub_date']}")
+            if news.get("body"):
+                lines.append(f"  > {news['body']}")
         else:
             lines.append("- _(관련기사 없음 / 미조회)_")
         lines.append("")
@@ -162,13 +162,16 @@ def render_section1_html(items: list[dict]) -> str:
             if item["is_limit_up"]
             else '<span class="badge high-volume">거래량 급증</span>'
         )
-        news_html = "".join(
-            f'<div class="news-item">▸ <a href="{_esc(n["url"])}" target="_blank" rel="noopener">{_esc(n["title"])}</a>'
-            f' <span class="section-note">— {_esc(n["pub_date"])}</span>'
-            + (f'<div class="news-summary">{_esc(n["summary"])}</div>' if n.get("summary") else "")
-            + "</div>"
-            for n in item.get("news", [])
-        ) or '<p class="empty">관련기사 없음 / 미조회</p>'
+        news = item.get("news")
+        if news:
+            news_html = (
+                f'<div class="news-item">▸ <a href="{_esc(news["url"])}" target="_blank" rel="noopener">{_esc(news["title"])}</a>'
+                f' <span class="section-note">— {_esc(news.get("source", ""))}, {_esc(news["pub_date"])}</span>'
+                + (f'<div class="news-summary">{_esc(news["body"])}</div>' if news.get("body") else "")
+                + "</div>"
+            )
+        else:
+            news_html = '<p class="empty">관련기사 없음 / 미조회</p>'
 
         disc_html = "".join(
             f'<div class="disc-item">▸ <a href="{_esc(d["url"])}" target="_blank" rel="noopener">{_esc(d["title"])}</a>'

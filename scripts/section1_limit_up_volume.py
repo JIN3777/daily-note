@@ -24,10 +24,10 @@ def build_section1(date: str, with_news: bool = True, with_disclosures: bool = T
         ticker = item["ticker"]
         item["name"] = krx_data.ticker_name(ticker)
 
-        item["news"] = []
+        item["news"] = None
         if with_news:
             try:
-                item["news"] = news_client.search_news(item["name"], date)
+                item["news"] = news_client.get_top_news(item["name"], date)
             except Exception as e:
                 print(f"[경고] {item['name']} 뉴스 조회 실패: {e}")
 
