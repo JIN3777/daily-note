@@ -15,7 +15,9 @@ from pykrx import stock
 from config import NOTES_DIR
 
 CHARTS_DIR = NOTES_DIR / "charts"
-LOOKBACK_CALENDAR_DAYS = 90
+LOOKBACK_CALENDAR_DAYS = 120  # 60일선까지 넉넉히 그려지도록 (달력일 기준, 휴장일 포함)
+MAV_PERIODS = (5, 20, 60)
+MAV_COLORS = ("#e67e22", "#16a34a", "#8e44ad")  # 5/20/60일선 색상 (범례로 구분)
 
 # pykrx가 내장 배포하는 한글 폰트를 등록 (matplotlib 기본 폰트는 한글 글리프가 없음).
 _FONT_PATH = os.path.join(os.path.dirname(pykrx.__file__), "NanumBarunGothic.ttf")
@@ -52,6 +54,18 @@ def render_chart(df: pd.DataFrame, ticker: str, name: str, as_of: str) -> str | 
     filename = f"{dt:%Y-%m-%d}_{ticker}.png"
     out_path = CHARTS_DIR / filename
 
+    # mplfinance의 mav= 옵션은 범례 라벨을 안 붙여주므로, addplot으로 직접 그려서
+    # MA5/MA20/MA60이 어떤 선인지 범례에 표시되게 한다.
+    addplots = [
+        mpf.make_addplot(
+            df["Close"].rolling(period).mean(),
+            color=color,
+            width=1.2,
+            label=f"MA{period}",
+        )
+        for period, color in zip(MAV_PERIODS, MAV_COLORS)
+    ]
+
     try:
         mpf.plot(
             df,
@@ -59,7 +73,8 @@ def render_chart(df: pd.DataFrame, ticker: str, name: str, as_of: str) -> str | 
             volume=True,
             style=_STYLE,
             title=f"{name} ({ticker})",
-            mav=5,
+            addplot=addplots,
+            figsize=(7, 4.5),
             savefig=dict(fname=out_path, dpi=120, bbox_inches="tight"),
         )
     except Exception:

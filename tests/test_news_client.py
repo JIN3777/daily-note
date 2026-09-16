@@ -1,3 +1,5 @@
+import base64
+
 import news_client
 
 SAMPLE_RSS = """<?xml version="1.0" encoding="UTF-8"?>
@@ -98,3 +100,38 @@ def test_get_top_news_prefers_title_match_over_earlier_generic_article(monkeypat
 
     assert result["title"] == "큐라티스, 임상 3상 결과 발표에 상한가"
     assert result["source"] == "이데일리"
+
+
+REAL_PUBLISHER_URL = "https://real-publisher.example.com/article/123"
+_raw = b"\x08\x13\x22" + REAL_PUBLISHER_URL.encode() + b"\x00\x02ko"
+_ENCODED_ID = base64.urlsafe_b64encode(_raw).decode().rstrip("=")
+
+REDIRECT_RSS = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+<item>
+<title>테스트종목 실적 발표 - 서울경제</title>
+<link>https://news.google.com/rss/articles/{_ENCODED_ID}</link>
+<pubDate>Wed, 16 Sep 2026 07:00:00 GMT</pubDate>
+<source url="https://sedaily.com">서울경제</source>
+</item>
+</channel>
+</rss>""".encode("utf-8")
+
+
+def _fake_get_redirect_stub(url, *args, **kwargs):
+    if url == news_client.RSS_URL:
+        return _FakeResp(content=REDIRECT_RSS)
+    if url == REAL_PUBLISHER_URL:
+        return _FakeResp(text=ARTICLE_HTML)
+    # 구글 뉴스 래퍼 페이지: 실제 서비스에서는 JS로 렌더링돼 텍스트가 거의 없다.
+    return _FakeResp(text="<html><body><script>location.replace('x')</script></body></html>")
+
+
+def test_fetch_article_body_falls_back_to_decoded_publisher_url(monkeypatch):
+    monkeypatch.setattr(news_client.requests, "get", _fake_get_redirect_stub)
+
+    result = news_client.get_top_news("테스트종목", "20260916")
+
+    assert result is not None
+    assert "엘레바가 리브보서파" in result["body"]

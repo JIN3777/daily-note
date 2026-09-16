@@ -4,6 +4,7 @@
 가입 없이 바로 쓸 수 있는 Google News RSS로 대체했다. 종목마다 여러 기사를 나열하는
 대신, 그날 상승/거래량 급증에 가장 영향을 줬을 법한 기사 1건만 골라 본문을 붙인다.
 """
+import base64
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
@@ -15,6 +16,12 @@ from readability import Document
 
 RSS_URL = "https://news.google.com/rss/search"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+REQUEST_HEADERS = {
+    "User-Agent": USER_AGENT,
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.8",
+}
+_URL_IN_BYTES_RE = re.compile(rb'https?://[^\x00-\x1f\x7f<>"\' ]{8,}')
 
 # 신뢰도가 높다고 판단하는 언론사 (앞쪽일수록 우선순위 높음). 부분 일치로 비교한다.
 TRUSTED_SOURCES = [
@@ -80,19 +87,62 @@ def _fetch_candidates(query: str, target_date: str) -> list[dict]:
     return candidates
 
 
-def fetch_article_body(url: str, max_chars: int = 800) -> str:
-    """기사 원문 페이지에서 본문 텍스트를 추출 (best-effort). 실패하면 빈 문자열."""
+def _decode_google_news_redirect(url: str) -> str | None:
+    """news.google.com/rss/articles/<id> 형태의 링크에서, 인코딩된 id 안에 함께 들어있는
+    원문 언론사 URL을 최대한 추출해본다 (Google이 공식으로 제공하는 방법이 아니라
+    best-effort 디코딩; 실패해도 예외를 던지지 않고 None을 반환).
+    """
+    m = re.search(r"/articles/([^/?]+)", url)
+    if not m:
+        return None
+    encoded = m.group(1)
     try:
-        resp = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=15, allow_redirects=True)
-        resp.raise_for_status()
-        doc = Document(resp.text)
-        soup = BeautifulSoup(doc.summary(), "html.parser")
-        text = _WS_RE.sub(" ", soup.get_text(separator=" ")).strip()
+        padded = encoded + "=" * (-len(encoded) % 4)
+        decoded = base64.urlsafe_b64decode(padded)
+    except Exception:
+        return None
+
+    found = _URL_IN_BYTES_RE.search(decoded)
+    if not found:
+        return None
+    candidate = found.group(0).decode("utf-8", errors="ignore")
+    return candidate if "google.com" not in candidate else None
+
+
+def fetch_article_body(url: str, max_chars: int = 1000) -> str:
+    """기사 원문 페이지에서 본문 텍스트를 추출 (best-effort). 실패하면 빈 문자열."""
+    fetch_url = url
+    for attempt in range(2):
+        try:
+            resp = requests.get(fetch_url, headers=REQUEST_HEADERS, timeout=15, allow_redirects=True)
+            resp.raise_for_status()
+        except Exception as e:
+            print(f"[경고] 기사 본문 요청 실패 ({fetch_url}): {e}")
+            return ""
+
+        try:
+            doc = Document(resp.text)
+            soup = BeautifulSoup(doc.summary(), "html.parser")
+            text = _WS_RE.sub(" ", soup.get_text(separator=" ")).strip()
+        except Exception as e:
+            print(f"[경고] 기사 본문 파싱 실패 ({fetch_url}): {e}")
+            text = ""
+
+        # 구글 뉴스 리다이렉트 페이지에 그대로 머물러서(=원문 사이트로 못 넘어가서)
+        # 본문이 거의 안 뽑힌 경우, 인코딩된 링크 속 원문 URL을 추출해 한 번 더 시도.
+        if len(text) < 50 and attempt == 0:
+            decoded_url = _decode_google_news_redirect(url)
+            if decoded_url and decoded_url != fetch_url:
+                print(f"[정보] 구글 뉴스 리다이렉트 우회, 원문으로 재시도: {decoded_url}")
+                fetch_url = decoded_url
+                continue
+
+        if not text:
+            print(f"[경고] 기사 본문이 비어있음 ({fetch_url})")
         if len(text) > max_chars:
             text = text[:max_chars].rstrip() + "…"
         return text
-    except Exception:
-        return ""
+    return ""
 
 
 def get_top_news(query: str, target_date: str) -> dict | None:

@@ -37,9 +37,6 @@ def render_section1(date: str, items: list[dict]) -> str:
         lines.append(f"### {item['name']} ({tag})")
         lines.append(f"— 등락률 {item['change_pct']:+.2f}% / 거래량 {_fmt_volume(item['volume'])}")
         lines.append("")
-        if item.get("chart"):
-            lines.append(f"![{item['name']} 차트]({item['chart']})")
-            lines.append("")
         lines.append("**◎ 관련기사**")
         news = item.get("news")
         if news:
@@ -58,6 +55,9 @@ def render_section1(date: str, items: list[dict]) -> str:
                 lines.append(f"- [{d['title']}]({d['url']}) — {d['submitter']}, {d['date']}")
         else:
             lines.append("- _(공시 없음 / 미조회)_")
+        if item.get("chart"):
+            lines.append("")
+            lines.append(f"![{item['name']} 차트]({item['chart']})")
         lines.append("\n---\n")
     return "\n".join(lines)
 
@@ -140,7 +140,7 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
 .metric { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
 .metric .up { color: var(--accent); font-weight: 600; }
 .subhead { font-size: 13px; font-weight: 700; color: var(--muted); margin: 12px 0 6px; }
-.chart-img { width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 12px; display: block; }
+.chart-img { width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-top: 14px; display: block; }
 .news-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
 .news-body { font-size: 14px; line-height: 1.6; margin: 0 0 6px; white-space: pre-line; }
 .news-cite { color: var(--muted); font-size: 13px; margin: 0; }
@@ -196,11 +196,11 @@ def render_section1_html(items: list[dict]) -> str:
 <div class="card">
   <div class="card-head"><span class="name">{_esc(item['name'])}</span>{badge}</div>
   <div class="metric"><span class="up">{item['change_pct']:+.2f}%</span> · 거래량 {_fmt_volume(item['volume'])}</div>
-  {chart_html}
   <div class="subhead">◎ 관련기사</div>
   {news_html}
   <div class="subhead">◎ 공시</div>
   {disc_html}
+  {chart_html}
 </div>"""
         )
     return f'<h2>1. 상한가 / 거래량 1,000만주 이상 종목</h2>{"".join(cards)}'
