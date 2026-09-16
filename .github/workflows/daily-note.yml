@@ -1,0 +1,59 @@
+name: Generate daily market note
+
+on:
+  schedule:
+    # 07:30 UTC = 16:30 KST, 평일만. 장 마감(15:30 KST) 후 데이터가 안정적으로
+    # 집계될 시간을 감안해 여유를 뒀다.
+    - cron: "30 7 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-note-pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore previous notes from gh-pages
+        run: |
+          mkdir -p notes
+          git fetch origin gh-pages 2>/dev/null || true
+          if git rev-parse --verify origin/gh-pages >/dev/null 2>&1; then
+            git worktree add /tmp/gh-pages-prev origin/gh-pages
+            cp -r /tmp/gh-pages-prev/. notes/ 2>/dev/null || true
+            git worktree remove /tmp/gh-pages-prev --force
+          fi
+
+      - name: Determine target trading date (Asia/Seoul)
+        id: date
+        run: echo "date=$(TZ='Asia/Seoul' date +%Y%m%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Run daily note generation
+        env:
+          KRX_ID: ${{ secrets.KRX_ID }}
+          KRX_PW: ${{ secrets.KRX_PW }}
+          DART_API_KEY: ${{ secrets.DART_API_KEY }}
+        run: python scripts/run_daily.py --date ${{ steps.date.outputs.date }}
+
+      - name: Deploy notes/ to GitHub Pages (gh-pages branch)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./notes
+          publish_branch: gh-pages
+          keep_files: false

@@ -10,8 +10,16 @@ OHLCV_COLUMNS = ["시가", "고가", "저가", "종가", "거래량", "거래대
 
 
 def market_snapshot(date: str, market: str = "ALL") -> pd.DataFrame:
-    """지정일의 전종목 시세 스냅샷. 휴장일이면 빈 DataFrame."""
-    df = stock.get_market_ohlcv_by_ticker(date, market=market)
+    """지정일의 전종목 시세 스냅샷. 휴장일이면 빈 DataFrame.
+
+    주말/공휴일에 조회하면 KRX가 빈 응답을 주고, pykrx가 그걸 파싱하다가
+    KeyError를 던지는 경우가 있다. 자동 실행(cron 등) 중 공휴일마다 실패하지
+    않도록, 그 경우도 "데이터 없음"으로 취급한다.
+    """
+    try:
+        df = stock.get_market_ohlcv_by_ticker(date, market=market)
+    except (KeyError, ValueError):
+        return pd.DataFrame(columns=OHLCV_COLUMNS)
     if df is None or df.empty:
         return pd.DataFrame(columns=OHLCV_COLUMNS)
     return df

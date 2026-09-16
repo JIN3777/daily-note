@@ -77,6 +77,31 @@ python scripts/build_note.py --date 20260916 --section1 /tmp/s1.json --section2 
 0 16 * * 1-5 cd /path/to/daily-note && .venv/bin/python scripts/run_daily.py --date $(date +\%Y\%m\%d) >> logs/run.log 2>&1
 ```
 
+## 자동 실행 + 항상 같은 주소에서 보기 (GitHub Actions + Pages)
+
+로컬 PC를 안 켜놔도, 평일 16:30(KST)에 자동으로 노트를 생성하고 웹사이트로 게시하도록
+설정할 수 있습니다. `.github/workflows/daily-note.yml`이 이미 포함되어 있고, 아래 설정만
+GitHub 웹사이트에서 한 번 해주면 됩니다.
+
+> GitHub Pages는 무료 플랜에서 **공개(public) 저장소**에서만 쓸 수 있습니다. 비공개를
+> 유지하려면 GitHub Pro(유료)가 필요합니다.
+
+1. **저장소 공개 전환**: 저장소 페이지 → Settings → 맨 아래 "Danger Zone" →
+   "Change repository visibility" → Public
+2. **Secrets 등록**: Settings → Secrets and variables → Actions → "New repository secret"에서
+   아래 3개를 각각 등록 (`.env`에 넣었던 값과 동일)
+   - `KRX_ID`
+   - `KRX_PW`
+   - `DART_API_KEY`
+3. **워크플로 최초 1회 수동 실행**: 저장소 상단 "Actions" 탭 → 왼쪽 "Generate daily market
+   note" → 오른쪽 "Run workflow" 버튼. 이 실행이 끝나면 `gh-pages` 브랜치가 자동으로 생깁니다.
+4. **Pages 활성화**: Settings → Pages → Source를 "Deploy from a branch"로, Branch를
+   `gh-pages` / `(root)`로 선택 → Save
+5. 몇 분 후 `https://<깃허브아이디>.github.io/daily-note/` 에서 확인 가능합니다.
+
+이후로는 평일 16:30(KST)마다 자동으로 그날 노트가 추가되고, 같은 주소에 계속 누적됩니다.
+Actions 탭에서 실행 이력과 실패 여부를 확인할 수 있습니다.
+
 ## 테스트
 
 핵심 스크리닝 로직(`limit_up_logic.py`, `pattern_logic.py`)은 네트워크 없이 단위 테스트로
