@@ -1,4 +1,5 @@
 """KRX 시세 데이터 조회 (pykrx 래퍼). 실행 환경에 실제 인터넷 접속이 필요합니다."""
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 
 import pandas as pd
@@ -7,6 +8,7 @@ import config  # noqa: F401  (pykrx가 모듈 import 시점에 KRX_ID/KRX_PW를 
 from pykrx import stock
 
 OHLCV_COLUMNS = ["시가", "고가", "저가", "종가", "거래량", "거래대금", "등락률"]
+MAX_WORKERS = 8
 
 
 def market_snapshot(date: str, market: str = "ALL") -> pd.DataFrame:
@@ -26,12 +28,17 @@ def market_snapshot(date: str, market: str = "ALL") -> pd.DataFrame:
 
 
 def market_snapshots(dates: list[str], market: str = "ALL") -> dict[str, pd.DataFrame]:
-    """날짜 리스트에 대한 스냅샷을 조회하고, 실제 거래가 있었던 날짜만 반환."""
+    """날짜 리스트에 대한 스냅샷을 병렬로 조회하고, 실제 거래가 있었던 날짜만 반환.
+
+    하루씩 순차 조회하면 (섹션2 기본 35일 기준) KRX 요청만 35번 직렬로 나가서
+    가장 큰 병목이었다. 날짜별 조회는 서로 독립적이라 스레드풀로 병렬 처리한다.
+    """
     result = {}
-    for d in dates:
-        snap = market_snapshot(d, market=market)
-        if not snap.empty:
-            result[d] = snap
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        snapshots = executor.map(lambda d: market_snapshot(d, market), dates)
+        for d, snap in zip(dates, snapshots):
+            if not snap.empty:
+                result[d] = snap
     return result
 
 

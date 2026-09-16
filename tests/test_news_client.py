@@ -24,28 +24,21 @@ SAMPLE_RSS = """<?xml version="1.0" encoding="UTF-8"?>
 </channel>
 </rss>""".encode("utf-8")
 
-ARTICLE_HTML = """<html><body><article>
-<p>HLB 미국 자회사 엘레바가 리브보서파 상업화를 위해 전문가를 영입했다고 밝혔다.</p>
-<p>업계에서는 이번 영입이 글로벌 진출에 속도를 낼 것으로 보고 있다.</p>
-</article></body></html>"""
-
 
 class _FakeResp:
-    def __init__(self, content=b"", text=""):
+    def __init__(self, content=b""):
         self.content = content
-        self.text = text
 
     def raise_for_status(self):
         pass
 
 
 def _fake_get(url, *args, **kwargs):
-    if url == news_client.RSS_URL:
-        return _FakeResp(content=SAMPLE_RSS)
-    return _FakeResp(text=ARTICLE_HTML)
+    assert url == news_client.RSS_URL
+    return _FakeResp(content=SAMPLE_RSS)
 
 
-def test_get_top_news_prefers_trusted_source_and_includes_body(monkeypatch):
+def test_get_top_news_prefers_trusted_source(monkeypatch):
     monkeypatch.setattr(news_client.requests, "get", _fake_get)
 
     result = news_client.get_top_news("HLB글로벌", "20220518")
@@ -54,7 +47,7 @@ def test_get_top_news_prefers_trusted_source_and_includes_body(monkeypatch):
     assert result["title"] == "HLB 미국 자회사 엘레바 상업화 위한 전문가 영입"
     assert result["source"] == "한국경제"
     assert result["pub_date"] == "2022-05-18"
-    assert "엘레바가 리브보서파" in result["body"]
+    assert result["url"] == "https://news.google.com/rss/articles/trusted"
 
 
 def test_get_top_news_returns_none_when_no_same_day_article(monkeypatch):
@@ -85,9 +78,8 @@ GENERIC_WRAP_RSS = """<?xml version="1.0" encoding="UTF-8"?>
 
 
 def _fake_get_generic_wrap(url, *args, **kwargs):
-    if url == news_client.RSS_URL:
-        return _FakeResp(content=GENERIC_WRAP_RSS)
-    return _FakeResp(text=ARTICLE_HTML)
+    assert url == news_client.RSS_URL
+    return _FakeResp(content=GENERIC_WRAP_RSS)
 
 
 def test_get_top_news_prefers_title_match_over_earlier_generic_article(monkeypatch):
@@ -98,20 +90,3 @@ def test_get_top_news_prefers_title_match_over_earlier_generic_article(monkeypat
 
     assert result["title"] == "큐라티스, 임상 3상 결과 발표에 상한가"
     assert result["source"] == "이데일리"
-
-
-def test_extract_data_p_payload_returns_none_without_attribute():
-    assert news_client._extract_data_p_payload("<html><body>no signature here</body></html>") is None
-
-
-def test_fetch_article_body_returns_empty_string_when_thin_and_no_signature(monkeypatch):
-    """본문도 못 뽑고 우회용 서명(data-p)도 없는 극단적인 경우, 예외 없이 빈 문자열을 반환해야 한다."""
-
-    def _fake_get_thin(url, *args, **kwargs):
-        return _FakeResp(text="<html><body><script>location.replace('x')</script></body></html>")
-
-    monkeypatch.setattr(news_client.requests, "get", _fake_get_thin)
-
-    body = news_client.fetch_article_body("https://news.google.com/rss/articles/deadbeef")
-
-    assert body == ""
