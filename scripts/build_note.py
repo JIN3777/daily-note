@@ -40,11 +40,14 @@ def render_section1(date: str, items: list[dict]) -> str:
         lines.append("**◎ 관련기사**")
         news = item.get("news")
         if news:
-            lines.append(f"**{news['title']}**")
-            lines.append("")
             if news.get("body"):
-                lines.append(news["body"])
+                lines.append(f"**{news['title']}**")
                 lines.append("")
+                lines.append(news["body"])
+            else:
+                # 본문 추출 실패 시, 최소한 원문을 찾아갈 수 있게 링크는 남겨둔다.
+                lines.append(f"**[{news['title']}]({news['url']})**")
+            lines.append("")
             lines.append(f"[{news.get('source', '')}, {news['pub_date']}]")
         else:
             lines.append("_(관련기사 없음 / 미조회)_")
@@ -142,6 +145,8 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
 .subhead { font-size: 13px; font-weight: 700; color: var(--muted); margin: 12px 0 6px; }
 .chart-img { width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-top: 14px; display: block; }
 .news-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.news-title a { color: var(--link); text-decoration: none; }
+.news-title a:hover { text-decoration: underline; }
 .news-body { font-size: 14px; line-height: 1.6; margin: 0 0 6px; white-space: pre-line; }
 .news-cite { color: var(--muted); font-size: 13px; margin: 0; }
 .disc-item { font-size: 14px; margin-bottom: 8px; }
@@ -171,9 +176,20 @@ def render_section1_html(items: list[dict]) -> str:
         )
         news = item.get("news")
         if news:
+            if news.get("body"):
+                title_html = f'<div class="news-title">{_esc(news["title"])}</div>'
+                body_html = f'<p class="news-body">{_esc(news["body"])}</p>'
+            else:
+                # 본문 추출 실패 시, 최소한 원문을 찾아갈 수 있게 링크는 남겨둔다.
+                title_html = (
+                    f'<div class="news-title">'
+                    f'<a href="{_esc(news["url"])}" target="_blank" rel="noopener">{_esc(news["title"])}</a>'
+                    f"</div>"
+                )
+                body_html = ""
             news_html = (
-                f'<div class="news-title">{_esc(news["title"])}</div>'
-                + (f'<p class="news-body">{_esc(news["body"])}</p>' if news.get("body") else "")
+                title_html
+                + body_html
                 + f'<p class="news-cite">[{_esc(news.get("source", ""))}, {_esc(news["pub_date"])}]</p>'
             )
         else:

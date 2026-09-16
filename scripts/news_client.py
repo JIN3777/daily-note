@@ -4,7 +4,8 @@
 가입 없이 바로 쓸 수 있는 Google News RSS로 대체했다. 종목마다 여러 기사를 나열하는
 대신, 그날 상승/거래량 급증에 가장 영향을 줬을 법한 기사 1건만 골라 본문을 붙인다.
 """
-import base64
+import html
+import json
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
@@ -15,13 +16,14 @@ from bs4 import BeautifulSoup
 from readability import Document
 
 RSS_URL = "https://news.google.com/rss/search"
+BATCH_EXECUTE_URL = "https://news.google.com/_/DotsSplashUi/data/batchexecute"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 REQUEST_HEADERS = {
     "User-Agent": USER_AGENT,
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.8",
 }
-_URL_IN_BYTES_RE = re.compile(rb'https?://[^\x00-\x1f\x7f<>"\' ]{8,}')
+_DATA_P_RE = re.compile(r'data-p="([^"]+)"')
 
 # 신뢰도가 높다고 판단하는 언론사 (앞쪽일수록 우선순위 높음). 부분 일치로 비교한다.
 TRUSTED_SOURCES = [
@@ -87,26 +89,39 @@ def _fetch_candidates(query: str, target_date: str) -> list[dict]:
     return candidates
 
 
-def _decode_google_news_redirect(url: str) -> str | None:
-    """news.google.com/rss/articles/<id> 형태의 링크에서, 인코딩된 id 안에 함께 들어있는
-    원문 언론사 URL을 최대한 추출해본다 (Google이 공식으로 제공하는 방법이 아니라
-    best-effort 디코딩; 실패해도 예외를 던지지 않고 None을 반환).
-    """
-    m = re.search(r"/articles/([^/?]+)", url)
+def _extract_data_p_payload(page_html: str) -> list | None:
+    """구글 뉴스 래퍼 페이지에 심어진 data-p 속성(서명이 담긴 JSON 배열)을 파싱."""
+    m = _DATA_P_RE.search(page_html)
     if not m:
         return None
-    encoded = m.group(1)
+    raw = html.unescape(m.group(1))
     try:
-        padded = encoded + "=" * (-len(encoded) % 4)
-        decoded = base64.urlsafe_b64decode(padded)
+        return json.loads(raw.replace("%.@.", '["garturlreq",') + ")")
     except Exception:
         return None
 
-    found = _URL_IN_BYTES_RE.search(decoded)
-    if not found:
+
+def _resolve_via_batchexecute(payload_obj: list) -> str | None:
+    """data-p에서 뽑은 서명을 구글 내부 batchexecute API에 되돌려줘서 실제 언론사 URL을 얻는다.
+
+    Google이 공식 지원하는 방법이 아니라 커뮤니티에 알려진 비공식 우회 방법이라,
+    구글이 내부 구조를 바꾸면 예고 없이 깨질 수 있다. 실패해도 예외 없이 None만 반환.
+    """
+    try:
+        inner = json.dumps(payload_obj[:-6] + payload_obj[-2:])
+        f_req = json.dumps([[["Fbv4je", inner, None, "generic"]]])
+        resp = requests.post(
+            BATCH_EXECUTE_URL,
+            headers={**REQUEST_HEADERS, "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
+            data={"f.req": f_req},
+            timeout=15,
+        )
+        resp.raise_for_status()
+        array_string = json.loads(resp.text.split("\n\n")[1])[:-2]
+        return json.loads(array_string[0][2])[1]
+    except Exception as e:
+        print(f"[경고] 구글 뉴스 원문 URL 변환 실패: {e}")
         return None
-    candidate = found.group(0).decode("utf-8", errors="ignore")
-    return candidate if "google.com" not in candidate else None
 
 
 def fetch_article_body(url: str, max_chars: int = 1000) -> str:
@@ -128,19 +143,22 @@ def fetch_article_body(url: str, max_chars: int = 1000) -> str:
             print(f"[경고] 기사 본문 파싱 실패 ({fetch_url}): {e}")
             text = ""
 
+        if len(text) >= 50:
+            if len(text) > max_chars:
+                text = text[:max_chars].rstrip() + "…"
+            return text
+
         # 구글 뉴스 리다이렉트 페이지에 그대로 머물러서(=원문 사이트로 못 넘어가서)
-        # 본문이 거의 안 뽑힌 경우, 인코딩된 링크 속 원문 URL을 추출해 한 번 더 시도.
-        if len(text) < 50 and attempt == 0:
-            decoded_url = _decode_google_news_redirect(url)
-            if decoded_url and decoded_url != fetch_url:
-                print(f"[정보] 구글 뉴스 리다이렉트 우회, 원문으로 재시도: {decoded_url}")
-                fetch_url = decoded_url
+        # 본문이 거의 안 뽑힌 경우, 페이지에 심어진 서명으로 원문 URL을 알아내 재시도.
+        if attempt == 0:
+            payload_obj = _extract_data_p_payload(resp.text)
+            resolved_url = _resolve_via_batchexecute(payload_obj) if payload_obj else None
+            if resolved_url and resolved_url != fetch_url:
+                print(f"[정보] 구글 뉴스 리다이렉트 우회, 원문으로 재시도: {resolved_url}")
+                fetch_url = resolved_url
                 continue
 
-        if not text:
-            print(f"[경고] 기사 본문이 비어있음 ({fetch_url})")
-        if len(text) > max_chars:
-            text = text[:max_chars].rstrip() + "…"
+        print(f"[경고] 기사 본문이 비어있음 ({fetch_url})")
         return text
     return ""
 
