@@ -63,3 +63,38 @@ def test_get_top_news_returns_none_when_no_same_day_article(monkeypatch):
     result = news_client.get_top_news("HLB글로벌", "20220520")
 
     assert result is None
+
+
+GENERIC_WRAP_RSS = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+<item>
+<title>[마감 시황] 코스피, 상승 마감...기관 순매수로 지수 견인 - 필드뉴스</title>
+<link>https://news.google.com/rss/articles/generic-wrap</link>
+<pubDate>Wed, 16 Sep 2026 06:00:00 GMT</pubDate>
+<source url="https://fieldnews.example.com">필드뉴스</source>
+</item>
+<item>
+<title>큐라티스, 임상 3상 결과 발표에 상한가 - 이데일리</title>
+<link>https://news.google.com/rss/articles/on-topic</link>
+<pubDate>Wed, 16 Sep 2026 07:00:00 GMT</pubDate>
+<source url="https://edaily.co.kr">이데일리</source>
+</item>
+</channel>
+</rss>""".encode("utf-8")
+
+
+def _fake_get_generic_wrap(url, *args, **kwargs):
+    if url == news_client.RSS_URL:
+        return _FakeResp(content=GENERIC_WRAP_RSS)
+    return _FakeResp(text=ARTICLE_HTML)
+
+
+def test_get_top_news_prefers_title_match_over_earlier_generic_article(monkeypatch):
+    """일반 시황 기사가 더 일찍 나왔어도, 종목명이 제목에 들어간 기사를 우선해야 한다."""
+    monkeypatch.setattr(news_client.requests, "get", _fake_get_generic_wrap)
+
+    result = news_client.get_top_news("큐라티스", "20260916")
+
+    assert result["title"] == "큐라티스, 임상 3상 결과 발표에 상한가"
+    assert result["source"] == "이데일리"

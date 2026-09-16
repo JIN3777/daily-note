@@ -33,6 +33,15 @@ def _source_rank(source: str) -> int:
     return len(TRUSTED_SOURCES)
 
 
+def _title_mentions_query(title: str, query: str) -> int:
+    """종목명이 제목에 직접 들어간 기사를 우선한다 (0=제목에 있음, 1=없음).
+
+    "코스피 마감시황"처럼 종목명이 본문 어딘가에만 스치듯 언급된 기사가
+    구글 검색 결과에 섞여 들어오는 걸 걸러내기 위함.
+    """
+    return 0 if query in title else 1
+
+
 def _fetch_candidates(query: str, target_date: str) -> list[dict]:
     """query 관련 뉴스 중 target_date(YYYYMMDD)에 발행된 기사 후보 전체 (정렬 전)."""
     dt = datetime.strptime(target_date, "%Y%m%d")
@@ -87,12 +96,16 @@ def fetch_article_body(url: str, max_chars: int = 800) -> str:
 
 
 def get_top_news(query: str, target_date: str) -> dict | None:
-    """당일 기사 중 신뢰 언론사 우선, 그다음 가장 이른 시각(사건에 가장 근접) 1건을 골라 본문과 함께 반환."""
+    """당일 기사 중 (1) 제목에 종목명이 직접 언급되고 (2) 신뢰 언론사인 기사를 우선 선택.
+
+    같은 우선순위 내에서는 구글 뉴스가 매긴 원래 관련도 순서(=수집 순서)를 그대로
+    유지한다 (발행 시각순으로 재정렬하면 오히려 관련 없는 기사가 앞으로 오는 경우가 있었음).
+    """
     candidates = _fetch_candidates(query, target_date)
     if not candidates:
         return None
 
-    candidates.sort(key=lambda c: (_source_rank(c["source"]), c["pub_dt"]))
+    candidates.sort(key=lambda c: (_title_mentions_query(c["title"], query), _source_rank(c["source"])))
     best = candidates[0]
 
     return {
