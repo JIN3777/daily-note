@@ -13,7 +13,8 @@ KRX 시세, DART 공시, 뉴스 검색 모두 실시간 데이터가 필요합�
 
 ### 1. 상한가 / 거래량 1,000만주 이상 종목
 - 당일 등락률이 +29.5% 이상(상한가) 이거나, 거래량이 1,000만주 이상인 종목
-- 종목별로 관련 뉴스(Google News, 원문 링크 포함)와 공시(DART, 상세 링크 포함)를 함께 기록
+- 종목별로 최근 60거래일 캔들+거래량 차트, 상승 이유로 가장 근접해 보이는 기사 1건의
+  본문(신뢰 언론사 우선 선정), 공시(DART, 상세 링크 포함)를 함께 기록
 
 ### 2. 거래량 폭증 → 급감 패턴 종목
 - 어느 날 거래량이 전일 대비 500~1000%로 폭증
@@ -119,7 +120,8 @@ scripts/
   config.py                    # .env 로드
   krx_data.py                  # pykrx 시세 조회
   dart_client.py                # DART 공시 API
-  news_client.py                # Google News RSS 검색 (키 불필요)
+  news_client.py                # Google News RSS 검색 + 본문 추출 (키 불필요)
+  chart_client.py                # 종목별 캔들+거래량 차트 생성 (mplfinance)
   limit_up_logic.py             # 섹션1 스크리닝 순수 로직 (테스트됨)
   pattern_logic.py              # 섹션2 스크리닝 순수 로직 (테스트됨)
   section1_limit_up_volume.py   # 섹션1 오케스트레이션

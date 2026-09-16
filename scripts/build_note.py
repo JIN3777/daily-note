@@ -37,14 +37,20 @@ def render_section1(date: str, items: list[dict]) -> str:
         lines.append(f"### {item['name']} ({tag})")
         lines.append(f"— 등락률 {item['change_pct']:+.2f}% / 거래량 {_fmt_volume(item['volume'])}")
         lines.append("")
+        if item.get("chart"):
+            lines.append(f"![{item['name']} 차트]({item['chart']})")
+            lines.append("")
         lines.append("**◎ 관련기사**")
         news = item.get("news")
         if news:
-            lines.append(f"- [{news['title']}]({news['url']}) — {news.get('source', '')}, {news['pub_date']}")
+            lines.append(f"**{news['title']}**")
+            lines.append("")
             if news.get("body"):
-                lines.append(f"  > {news['body']}")
+                lines.append(news["body"])
+                lines.append("")
+            lines.append(f"[{news.get('source', '')}, {news['pub_date']}]")
         else:
-            lines.append("- _(관련기사 없음 / 미조회)_")
+            lines.append("_(관련기사 없음 / 미조회)_")
         lines.append("")
         lines.append("**◎ 공시**")
         if item.get("disclosures"):
@@ -52,8 +58,6 @@ def render_section1(date: str, items: list[dict]) -> str:
                 lines.append(f"- [{d['title']}]({d['url']}) — {d['submitter']}, {d['date']}")
         else:
             lines.append("- _(공시 없음 / 미조회)_")
-        lines.append("")
-        lines.append("_(차트 캡처 첨부 위치)_")
         lines.append("\n---\n")
     return "\n".join(lines)
 
@@ -136,10 +140,13 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
 .metric { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
 .metric .up { color: var(--accent); font-weight: 600; }
 .subhead { font-size: 13px; font-weight: 700; color: var(--muted); margin: 12px 0 6px; }
-.news-item, .disc-item { font-size: 14px; margin-bottom: 8px; }
-.news-item a, .disc-item a { color: var(--link); text-decoration: none; }
-.news-item a:hover, .disc-item a:hover { text-decoration: underline; }
-.news-summary { color: var(--muted); font-size: 13px; margin: 2px 0 0 2px; }
+.chart-img { width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 12px; display: block; }
+.news-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.news-body { font-size: 14px; line-height: 1.6; margin: 0 0 6px; white-space: pre-line; }
+.news-cite { color: var(--muted); font-size: 13px; margin: 0; }
+.disc-item { font-size: 14px; margin-bottom: 8px; }
+.disc-item a { color: var(--link); text-decoration: none; }
+.disc-item a:hover { text-decoration: underline; }
 .empty { color: var(--muted); font-size: 14px; }
 .gap-pos { color: #16a34a; }
 .gap-neg { color: var(--accent); }
@@ -165,10 +172,9 @@ def render_section1_html(items: list[dict]) -> str:
         news = item.get("news")
         if news:
             news_html = (
-                f'<div class="news-item">▸ <a href="{_esc(news["url"])}" target="_blank" rel="noopener">{_esc(news["title"])}</a>'
-                f' <span class="section-note">— {_esc(news.get("source", ""))}, {_esc(news["pub_date"])}</span>'
-                + (f'<div class="news-summary">{_esc(news["body"])}</div>' if news.get("body") else "")
-                + "</div>"
+                f'<div class="news-title">{_esc(news["title"])}</div>'
+                + (f'<p class="news-body">{_esc(news["body"])}</p>' if news.get("body") else "")
+                + f'<p class="news-cite">[{_esc(news.get("source", ""))}, {_esc(news["pub_date"])}]</p>'
             )
         else:
             news_html = '<p class="empty">관련기사 없음 / 미조회</p>'
@@ -179,11 +185,18 @@ def render_section1_html(items: list[dict]) -> str:
             for d in item.get("disclosures", [])
         ) or '<p class="empty">공시 없음 / 미조회</p>'
 
+        chart_html = (
+            f'<img class="chart-img" src="{_esc(item["chart"])}" alt="{_esc(item["name"])} 차트">'
+            if item.get("chart")
+            else ""
+        )
+
         cards.append(
             f"""
 <div class="card">
   <div class="card-head"><span class="name">{_esc(item['name'])}</span>{badge}</div>
   <div class="metric"><span class="up">{item['change_pct']:+.2f}%</span> · 거래량 {_fmt_volume(item['volume'])}</div>
+  {chart_html}
   <div class="subhead">◎ 관련기사</div>
   {news_html}
   <div class="subhead">◎ 공시</div>

@@ -15,6 +15,7 @@ def main():
     parser.add_argument("--date", required=True, help="YYYYMMDD (기준 거래일)")
     parser.add_argument("--no-news", action="store_true", help="뉴스 조회 생략")
     parser.add_argument("--no-disclosures", action="store_true", help="공시 조회 생략")
+    parser.add_argument("--no-chart", action="store_true", help="차트 이미지 생성 생략")
     parser.add_argument(
         "--lookback-days",
         type=int,
@@ -25,7 +26,10 @@ def main():
 
     print(f"[1/3] 섹션1 (상한가/거래량) 스크리닝 중... ({args.date})")
     section1_items = build_section1(
-        args.date, with_news=not args.no_news, with_disclosures=not args.no_disclosures
+        args.date,
+        with_news=not args.no_news,
+        with_disclosures=not args.no_disclosures,
+        with_chart=not args.no_chart,
     )
     print(f"  -> {len(section1_items)}건 발견")
 
