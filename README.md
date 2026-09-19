@@ -89,7 +89,7 @@ python scripts/create_desktop_icon.py --url https://<깃허브아이디>.github.
 
 Windows/macOS/Linux 모두 지원하며, 실행한 OS에 맞는 형식(.url / .webloc / .desktop)으로
 바탕화면에 아이콘이 생성됩니다. Windows/Linux에서는 브라우저 기본 아이콘 대신
-`assets/icon.ico` / `assets/icon.png`의 캔들차트 아이콘이 표시됩니다(macOS `.webloc`은
+`assets/icon.ico` / `assets/icon.png`의 공부 노트 아이콘이 표시됩니다(macOS `.webloc`은
 커스텀 아이콘을 지원하지 않아 기본 아이콘으로 표시됩니다).
 
 ## 매일 자동 실행하기
