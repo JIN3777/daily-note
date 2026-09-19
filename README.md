@@ -69,6 +69,22 @@ python scripts/section2_volume_pattern.py --date 20260916 --out /tmp/s2.json
 python scripts/build_note.py --date 20260916 --section1 /tmp/s1.json --section2 /tmp/s2.json
 ```
 
+## 바탕화면 아이콘 만들기
+
+노트를 열 때마다 폴더를 찾아가지 않도록, 더블클릭 한 번으로 여는 바탕화면 아이콘을
+만들 수 있습니다. **본인 PC**에서 실행하세요.
+
+```bash
+# 로컬 notes/index.html을 여는 아이콘 (기본값)
+python scripts/create_desktop_icon.py
+
+# GitHub Pages로 배포했다면 그 주소를 여는 아이콘
+python scripts/create_desktop_icon.py --url https://<깃허브아이디>.github.io/daily-note/
+```
+
+Windows/macOS/Linux 모두 지원하며, 실행한 OS에 맞는 형식(.url / .webloc / .desktop)으로
+바탕화면에 아이콘이 생성됩니다.
+
 ## 매일 자동 실행하기
 
 `cron`(macOS/Linux) 또는 작업 스케줄러(Windows)에 등록해서 장 마감 후(예: 16:00) 자동
