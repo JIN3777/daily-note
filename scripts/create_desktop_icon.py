@@ -15,6 +15,8 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+ICON_ICO = REPO_ROOT / "assets" / "icon.ico"
+ICON_PNG = REPO_ROOT / "assets" / "icon.png"
 
 
 def default_target() -> str:
@@ -33,7 +35,10 @@ def find_desktop_dir() -> Path:
 
 def create_windows_shortcut(desktop: Path, name: str, target: str) -> Path:
     path = desktop / f"{name}.url"
-    path.write_text(f"[InternetShortcut]\nURL={target}\n", encoding="utf-8")
+    content = f"[InternetShortcut]\nURL={target}\n"
+    if ICON_ICO.exists():
+        content += f"IconFile={ICON_ICO}\nIconIndex=0\n"
+    path.write_text(content, encoding="utf-8")
     return path
 
 
@@ -52,12 +57,13 @@ def create_macos_shortcut(desktop: Path, name: str, target: str) -> Path:
 
 def create_linux_shortcut(desktop: Path, name: str, target: str) -> Path:
     path = desktop / f"{name}.desktop"
+    icon = str(ICON_PNG) if ICON_PNG.exists() else "text-html"
     path.write_text(
         "[Desktop Entry]\n"
         "Type=Link\n"
         f"Name={name}\n"
         f"URL={target}\n"
-        "Icon=text-html\n",
+        f"Icon={icon}\n",
         encoding="utf-8",
     )
     path.chmod(0o755)

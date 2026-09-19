@@ -9,6 +9,15 @@ import create_desktop_icon as icon
 def test_create_windows_shortcut_content(tmp_path):
     path = icon.create_windows_shortcut(tmp_path, "일일 시황 노트", "https://example.com/")
     assert path.name == "일일 시황 노트.url"
+    content = path.read_text(encoding="utf-8")
+    assert "URL=https://example.com/" in content
+    assert f"IconFile={icon.ICON_ICO}" in content
+    assert "IconIndex=0" in content
+
+
+def test_create_windows_shortcut_without_icon_asset(tmp_path, monkeypatch):
+    monkeypatch.setattr(icon, "ICON_ICO", tmp_path / "missing.ico")
+    path = icon.create_windows_shortcut(tmp_path, "일일 시황 노트", "https://example.com/")
     assert path.read_text(encoding="utf-8") == "[InternetShortcut]\nURL=https://example.com/\n"
 
 
@@ -24,7 +33,14 @@ def test_create_linux_shortcut_content(tmp_path):
     content = path.read_text(encoding="utf-8")
     assert "Type=Link" in content
     assert "URL=https://example.com/" in content
+    assert f"Icon={icon.ICON_PNG}" in content
     assert (path.stat().st_mode & 0o755) == 0o755
+
+
+def test_create_linux_shortcut_without_icon_asset(tmp_path, monkeypatch):
+    monkeypatch.setattr(icon, "ICON_PNG", tmp_path / "missing.png")
+    path = icon.create_linux_shortcut(tmp_path, "일일 시황 노트", "https://example.com/")
+    assert "Icon=text-html" in path.read_text(encoding="utf-8")
 
 
 def test_find_desktop_dir_prefers_existing_korean_name(tmp_path, monkeypatch):
