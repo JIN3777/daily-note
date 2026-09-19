@@ -142,7 +142,47 @@ h2 { font-size: 17px; margin: 36px 0 14px; padding-bottom: 8px; border-bottom: 2
 .empty { color: var(--muted); font-size: 14px; }
 .gap-pos { color: #16a34a; }
 .gap-neg { color: var(--accent); }
+.memo { margin-top: 14px; }
+.memo-label { font-size: 13px; font-weight: 700; color: #92720c; margin-bottom: 4px; }
+.memo-input {
+  width: 100%; min-height: 90px; resize: vertical; box-sizing: border-box;
+  background: #fff7cc; color: #3a3000; border: 1px solid #e8d475; border-radius: 8px;
+  padding: 10px 12px; font: inherit; font-size: 14px; line-height: 1.5;
+}
+.memo-input::placeholder { color: #a3924f; }
+.memo-input:focus { outline: 2px solid #e8d475; outline-offset: 1px; }
+.memo-saved { font-size: 12px; color: var(--muted); margin-top: 4px; visibility: hidden; }
+.memo-saved.show { visibility: visible; }
 </style>
+"""
+
+_MEMO_SCRIPT = """
+<script>
+(function () {
+  var KEY_PREFIX = "daily-note-memo:";
+  document.querySelectorAll(".memo-input").forEach(function (el) {
+    var key = KEY_PREFIX + el.dataset.key;
+    var saved = el.closest(".memo").querySelector(".memo-saved");
+    try {
+      var stored = localStorage.getItem(key);
+      if (stored) el.value = stored;
+    } catch (e) {}
+    var timer = null;
+    el.addEventListener("input", function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        try {
+          localStorage.setItem(key, el.value);
+          if (saved) {
+            saved.textContent = "자동 저장됨";
+            saved.classList.add("show");
+          }
+        } catch (e) {}
+      }, 300);
+    });
+  });
+})();
+</script>
 """
 
 
@@ -150,7 +190,7 @@ def _esc(v) -> str:
     return html.escape(str(v)) if v is not None else ""
 
 
-def render_section1_html(items: list[dict]) -> str:
+def render_section1_html(date_str: str, items: list[dict]) -> str:
     if not items:
         return '<h2>1. 상한가 / 거래량 1,000만주 이상 종목</h2><p class="empty">해당 종목 없음</p>'
 
@@ -183,6 +223,14 @@ def render_section1_html(items: list[dict]) -> str:
             else ""
         )
 
+        memo_key = _esc(f"{date_str}:{item['ticker']}")
+        memo_html = f"""
+  <div class="memo">
+    <div class="memo-label">✎ 나의 분석</div>
+    <textarea class="memo-input" data-key="{memo_key}" placeholder="이 종목에 대한 분석을 적어보세요 (이 브라우저에 자동 저장됩니다)"></textarea>
+    <div class="memo-saved"></div>
+  </div>"""
+
         cards.append(
             f"""
 <div class="card">
@@ -193,6 +241,7 @@ def render_section1_html(items: list[dict]) -> str:
   <div class="subhead">◎ 공시</div>
   {disc_html}
   {chart_html}
+  {memo_html}
 </div>"""
         )
     return f'<h2>1. 상한가 / 거래량 1,000만주 이상 종목</h2>{"".join(cards)}'
@@ -223,6 +272,7 @@ def render_section2_html(items: list[dict]) -> str:
 
 def build_note_html(date: str, section1_items: list[dict], section2_items: list[dict]) -> str:
     title = f"{_fmt_date_kr(date)} 시황 노트"
+    date_str = f"{_to_date_obj(date):%Y-%m-%d}"
     return f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -235,9 +285,10 @@ def build_note_html(date: str, section1_items: list[dict], section2_items: list[
 <div class="wrap">
   <div class="topnav"><a href="index.html">&larr; 전체 노트 목록</a></div>
   <h1>{_esc(title)}</h1>
-  {render_section1_html(section1_items)}
+  {render_section1_html(date_str, section1_items)}
   {render_section2_html(section2_items)}
 </div>
+{_MEMO_SCRIPT}
 </body>
 </html>"""
 

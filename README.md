@@ -61,6 +61,11 @@ python scripts/run_daily.py --date 20260916 --lookback-days 60
 **결과 확인은 `notes/index.html`을 더블클릭해서 브라우저로 여세요.** 날짜별 카드 목록이 나오고,
 클릭하면 그날의 종목/뉴스/공시가 정리된 페이지로 이동합니다.
 
+섹션1의 종목 카드마다 차트 아래에 노란색 메모장(**✎ 나의 분석**)이 있어서, 그 종목에 대한
+본인 분석을 자유롭게 적을 수 있습니다. 입력 내용은 서버가 아니라 **그 브라우저에**
+자동 저장되므로, 같은 브라우저로 다시 열면 이어서 볼 수 있습니다(다른 브라우저/기기에는
+동기화되지 않습니다).
+
 섹션별로 따로 실행해서 JSON으로 결과만 뽑아볼 수도 있습니다.
 
 ```bash
@@ -68,6 +73,24 @@ python scripts/section1_limit_up_volume.py --date 20260916 --out /tmp/s1.json
 python scripts/section2_volume_pattern.py --date 20260916 --out /tmp/s2.json
 python scripts/build_note.py --date 20260916 --section1 /tmp/s1.json --section2 /tmp/s2.json
 ```
+
+## 바탕화면 아이콘 만들기
+
+노트를 열 때마다 폴더를 찾아가지 않도록, 더블클릭 한 번으로 여는 바탕화면 아이콘을
+만들 수 있습니다. **본인 PC**에서 실행하세요.
+
+```bash
+# 로컬 notes/index.html을 여는 아이콘 (기본값)
+python scripts/create_desktop_icon.py
+
+# GitHub Pages로 배포했다면 그 주소를 여는 아이콘
+python scripts/create_desktop_icon.py --url https://<깃허브아이디>.github.io/daily-note/
+```
+
+Windows/macOS/Linux 모두 지원하며, 실행한 OS에 맞는 형식(.url / .webloc / .desktop)으로
+바탕화면에 아이콘이 생성됩니다. Windows/Linux에서는 브라우저 기본 아이콘 대신
+`assets/icon.ico` / `assets/icon.png`의 공부 노트 아이콘이 표시됩니다(macOS `.webloc`은
+커스텀 아이콘을 지원하지 않아 기본 아이콘으로 표시됩니다).
 
 ## 매일 자동 실행하기
 
